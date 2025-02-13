@@ -14,6 +14,8 @@
         <option value="$MODULE_DIR$/home/templates" />
         <option value="$MODULE_DIR$/moviesstore/templates" />
         <option value="$MODULE_DIR$/movies/templates" />
+        <option value="$MODULE_DIR$/accounts/templates" />
+        <option value="$MODULE_DIR$/cart/templates" />
       </list>
     </option>
   </component>
