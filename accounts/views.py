@@ -5,6 +5,9 @@ from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 
+from django.contrib.auth.forms import PasswordChangeForm
+
+
 # Create your views here.
 @login_required
 def logout(request):
@@ -55,3 +58,47 @@ def orders(request):
     template_data['orders'] = request.user.order_set.all()
     return render(request, 'accounts/orders.html',
         {'template_data': template_data})
+
+
+def reset_password(request):
+    template_data = {}
+    template_data['title'] = 'Reset Password'
+
+    if request.method == 'GET':
+        return render(request, 'accounts/reset_password.html',
+            {'template_data': template_data})
+    elif request.method == 'POST':
+        username = request.POST.get('username')
+        try:
+            user = User.objects.get(username=username)
+            template_data['user_id'] = user.id
+            return redirect(f'/accounts/change_password/{user.id}/')
+        except User.DoesNotExist:
+            template_data['error'] = 'No user found with that username.'
+            return render(request, 'accounts/reset_password.html',
+                          {'template_data': template_data})
+
+def change_password(request, user_id):
+    template_data = {}
+    template_data['title'] = 'Change Password'
+
+    if request.method == 'GET':
+        template_data['user_id'] = user_id
+        return render(request, 'accounts/change_password.html',
+            {'template_data': template_data})
+
+    if request.method == 'POST':
+        password_one = request.POST.get('password_one')
+        password_two = request.POST.get('password_two')
+
+        if password_one and password_two and password_one == password_two:
+            user = User.objects.get(id=user_id)
+            user.set_password(password_one)
+            user.save()
+            return redirect('accounts.login')
+        else:
+            template_data['error'] = 'Passwords do not match.'
+            template_data['user_id'] = user_id
+
+    return render(request, 'accounts/change_password.html',
+                  {'template_data': template_data})
