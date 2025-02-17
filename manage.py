@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+#This is the python managepy file. Double checks for DJANGO implementation.
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
